@@ -12,6 +12,6 @@ var view = {
         cell.setAttribute('class','miss');
     }
 };
-view.displayMessage("HI");
+view.displayMessage("1888FPS");
 view.displayHit("A3");
 view.displayHit("C4");
