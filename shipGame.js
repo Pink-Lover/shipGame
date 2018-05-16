@@ -12,6 +12,18 @@ var view = {
         cell.setAttribute('class','miss');
     }
 };
-view.displayMessage("1888FPS");
-view.displayHit("A3");
-view.displayHit("C4");
+var model = {
+    boardSize: 7,
+    numShips: 3,
+    shipSunk: 0,
+    shipLength: 3,
+    ships: [{ location: ["A6", "B6", "C6"], hits: ["", "", ""]},
+            { location: ["C4", "D4", "E4"], hits: ["", "", ""]},
+            { location: ["B0", "B1", "B2"], hits: ["", "", ""]},
+            ],
+    fire: function(guess){
+        for (var i = 0; i < this.numShips; i++){
+            var ship = this.ships[i];
+        }
+    }
+}
