@@ -17,9 +17,9 @@ var model = {
     numShips: 3,
     shipSunk: 0,
     shipLength: 3,
-    ships: [{ locations: ["A6", "B6", "C6"], hits: ["", "", ""]},
-            { locations: ["C4", "D4", "E4"], hits: ["", "", ""]},
-            { locations: ["B0", "B1", "B2"], hits: ["", "", ""]},
+    ships: [{ locations: ["06", "16", "26"], hits: ["", "", ""] },
+            { locations: ["24", "34", "44"], hits: ["", "", ""] },
+            { locations: ["10", "11", "12"], hits: ["", "", ""] },
             ],
     fire: function(guess){
         for (var i = 0; i < this.numShips; i++){
