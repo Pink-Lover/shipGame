@@ -12,6 +12,9 @@ var view = {
         cell.setAttribute('class','miss');
     }
 };
+
+
+
 var model = {
     boardSize: 7,
     numShips: 3,
@@ -49,7 +52,28 @@ var model = {
         }
         return true;
     }
+};
+
+
+
+
+var controller = {
+    guesses: 0,
+    processGuess: function(guess){
+        var location = parseGuess(guess);
+        if (location){
+            this.guesses++;
+            var hit = model.fire(location);
+            if (hit && model,shipSunk === model.numShips){
+                view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+            }
+        }
+    }
 }
+
+
+
+
 function parseGuess(guess){
     var alphabet = ["A","B","C","D","E","F","G"];
     if (guess === null || guess.length !== 2){
@@ -62,6 +86,40 @@ function parseGuess(guess){
             alert("Oops,that isn't on the board.");
         } else if (row < 0 || row >= model.boardSize || column < 0 || column >= model.boardSize){
             alert("Oops, that's off the board")
+        } else {
+            return row + column;
         }
     }
+    return null;
+};
+
+
+
+function init() {
+    var fireButton = document.getElementById("fireButton");
+    fireButton.onclick = handleFireButton;
+    var guessInput = document.getElementById("guessInput");
+    guessInput.onkeypress = handlekeyPress;
 }
+
+
+
+function handleFireButton() {
+    var guessInput =  document.getElementById("guessInput");
+    var guess = guessInput.value;
+    controller.processGuess(guess);
+    guessInput.value = "";
+}
+
+
+function handlekeyPress(e){
+    var fireButton = document.getElementById("fireButton");
+    if (e.keyCode === 13){
+        fireButton.click();
+        return false;
+    }
+}
+
+
+
+window.onload = init;
