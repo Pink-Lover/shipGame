@@ -130,7 +130,7 @@ function init() {
     fireButton.onclick = handleFireButton;
     var guessInput = document.getElementById("guessInput");
     guessInput.onkeypress = handlekeyPress;
-    model.generateShipLocations();
+    model.generateShip();
 }
 
 
