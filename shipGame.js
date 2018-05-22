@@ -1,7 +1,7 @@
 var view = {
     displayMessage: function(msg){
-        var message = document.getElementById('messageArea');
-        message.innerHTML = msg;
+        var messageArea = document.getElementById('messageArea');
+        messageArea.innerHTML = msg;
     },
     displayHit: function(location){
         var cell = document.getElementById(location);
@@ -20,30 +20,36 @@ var model = {
     numShips: 3,
     shipSunk: 0,
     shipLength: 3,
-    ships: [{ locations: [0,0,0], hits: ["", "", ""] },
-            { locations: [0,0,0], hits: ["", "", ""] },
-            { locations: [0,0,0], hits: ["", "", ""] },
+    ships: [{ locations: [0, 0, 0], hits: ["", "", ""] },
+            { locations: [0, 0, 0], hits: ["", "", ""] },
+            { locations: [0, 0, 0], hits: ["", "", ""] },
             ],
     fire: function(guess){
-        for (var i = 0; i < this.numShips; i++){
-            var ship = this.ships[i];
-            var locations = ship.locations;
-            var index = locations.indexOf(guess);
-            if(index >= 0){
-                ship.hits[index] = 'hit';
-                view.displayHit(guess);
-                view.displayMessage('HIT!!');
-                if (this.isSunk(ship)){
-                    view.displayMessage('You sank my battleship!');
-                    this.shipSunk++;
+        for (var i = 0; i < this.numShips; i++) {
+			var ship = this.ships[i];
+			var index = ship.locations.indexOf(guess);
+			if (ship.hits[index] === "hit") {
+				view.displayMessage("Oops, you already hit that location!");
+				return true;
+			}
+			 else {
+                 if (index >= 0) {
+                    ship.hits[index] = "hit";
+                    view.displayHit(guess);
+                    view.displayMessage("HIT!");
+
+                    if (this.isSunk(ship)) {
+                        view.displayMessage("You sank my battleship!");
+                        this.shipsSunk++;
+                    }
+                    return true;
                 }
-                return true;
-            }
-        }
-        view.displayMiss(guess);
-        view.displayMessage('You missied.')
-        return false;
-    },
+			}
+		}
+		view.displayMiss(guess);
+		view.displayMessage("You missed.");
+		return false;
+	},
     isSunk: function(ship){
         for (var i = 0; i < this.shipLength; i++){
             if (ship.hits[i] !== "hit"){
@@ -52,6 +58,17 @@ var model = {
         }
         return true;
     },
+    generateShipLocations: function() {
+		var locations;
+		for (var i = 0; i < this.numShips; i++) {
+			do {
+				locations = this.generateShip();
+			} while (this.collision(locations));
+			this.ships[i].locations = locations;
+		}
+		console.log("Ships array: ");
+		console.log(this.ships);
+	},
     generateShip: function() {
         var direction = Math.floor(Math.random() * 2);
         var row, col;
@@ -75,9 +92,11 @@ var model = {
     },
     collision: function(locations){
         for (var i = 0; i < this.numShips; i++){
-            var ship = model.ships[i];
+            var ship = this.ships[i];
             for (var j = 0; j < locations.length; j++){
-                return true;
+                if (ship.locations.indexOf(locations[j]) >= 0) {
+                    return true;
+                }  
             }
         }
         return false;
@@ -105,11 +124,11 @@ var controller = {
 
 
 function parseGuess(guess){
-    var alphabet = ["A","B","C","D","E","F","G"];
+    var alphabet = ["A", "B", "C", "D", "E", "F", "G"];
     if (guess === null || guess.length !== 2){
         alert("Oops,please enter a letter and a number on the board.");
     } else {
-        firstChar = guess.charAt(0);
+        var firstChar = guess.charAt(0);
         var row = alphabet.indexOf(firstChar);
         var column = guess.charAt(1);
         if(isNaN(row) || isNaN(column)){
@@ -130,14 +149,14 @@ function init() {
     fireButton.onclick = handleFireButton;
     var guessInput = document.getElementById("guessInput");
     guessInput.onkeypress = handlekeyPress;
-    model.generateShip();
+    model.generateShipLocations();
 }
 
 
 
 function handleFireButton() {
     var guessInput =  document.getElementById("guessInput");
-    var guess = guessInput.value;
+    var guess = guessInput.value.toUpperCase();
     controller.processGuess(guess);
     guessInput.value = "";
 }
@@ -145,6 +164,7 @@ function handleFireButton() {
 
 function handlekeyPress(e){
     var fireButton = document.getElementById("fireButton");
+    e = e || window.event;
     if (e.keyCode === 13){
         fireButton.click();
         return false;
